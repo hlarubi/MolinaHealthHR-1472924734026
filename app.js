@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/*eslint-env node */
 'use strict';
 
 var express    = require('express'),
@@ -33,6 +34,29 @@ var personalityInsights = watson.personality_insights({
   version: 'v2',
   username: '<username>',
   password: '<password>'
+});
+
+// Create the service wrapper
+var textToSpeech = watson.text_to_speech({
+  version: 'v1',
+  username: '<username>',
+  password: '<password>'
+});
+
+// Handle text to speech request from client
+app.get('/synthesize', function(req, res) {
+  console.log('Converting text ....');
+  var params = {
+    text: req.query.text,
+    voice: 'en-GB_KateVoice',
+    accept: 'audio/ogg; codec=opus'
+  };
+  var speech = textToSpeech.synthesize(params);
+  speech.on('error', function(error) {
+    console.log('Synthesize error: ', error);
+  });
+  // return streaming audio to client
+  speech.pipe(res);
 });
 
 app.get('/', function(req, res) {

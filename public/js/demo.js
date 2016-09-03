@@ -53,6 +53,17 @@ $(document).ready(function() {
     $content.val('');
     updateWordsCount();
   });
+  
+  $('.listen-btn').click(function(){
+        console.log('listen pressed');
+        var theText = $('.summary-div').text();
+        theText = theText.replace(/\./g,' ');
+        var streamingURL = '/synthesize?text=' + encodeURIComponent(theText);
+        var audio = $('.audio').get(0);
+        audio.src = streamingURL;
+        audio.play();
+        return false;
+});
 
   /**
    * Update words count on change
